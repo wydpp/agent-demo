@@ -36,19 +36,21 @@ def exists_folder(folder_name) -> bool:
     return os.path.exists(folder_name)
 
 @tool
-def generate_file(arguments) -> str:
+def generate_file(folder_name:str,file_name:str,file_content:str) -> str:
     """
-    根据提供的参数生成文件。输入应为 JSON 格式，包含 folder_name、file_name 和 file_content 字段。
-    :param arguments: 输入应为 JSON 格式，包含 folder_name、file_name 和 file_content 字段
+    根据提供的参数生成文件
+    :param folder_name: 文件夹目录
+    :param file_name: 文件名称
+    :param file_content: 文件内容
     :return:
     """
-    logger.info(f"创建文件入参：{arguments}")
-    if isinstance(arguments, str):
-        arguments = json.loads(arguments)
+    # logger.info(f"创建文件入参：{arguments}")
+    # if isinstance(arguments, str):
+    #     arguments = json.loads(arguments)
     # 提取参数
-    folder_name = arguments.get("folder_name")
-    file_name = arguments.get("file_name")
-    file_content = arguments.get("file_content")
+    # folder_name = arguments.get("folder_name")
+    # file_name = arguments.get("file_name")
+    # file_content = arguments.get("file_content")
     if not os.path.exists(folder_name):
         return "文件夹不存在，无法生成文件"
 

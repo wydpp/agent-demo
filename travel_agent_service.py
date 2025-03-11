@@ -6,7 +6,7 @@ import os
 from langchain.agents import AgentExecutor
 from langchain.agents import create_tool_calling_agent
 from langchain.chat_models import init_chat_model
-from langchain_core.messages import SystemMessage, HumanMessage
+from langchain_core.messages import SystemMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
 from tools.file_tools import create_folder, generate_file, exists_folder
@@ -20,28 +20,28 @@ llm = init_chat_model(model="qwen-plus",
 
 system_prompt = """
 用户的输入是一个城市的名称，你是一个旅游博主，需要按照以下步骤进行：
-1.根据用户输入的城市名称，创建一个本地文件夹
+1.把用户输入的城市名称，作为文件夹名称，先检查文件夹是否存在，不存在，则创建一个本地文件夹，存在就无需创建了
 2.需要根据城市名称，查询该城市的天气情况
-3.需要根据市名称和该城市的天气情况，生成一份1天的关于该城市的旅游计划（200字以内）
-4.给该计划起一个标题，该计划文件内容是markdown格式，内容文本要支持json格式，存在第一步创建的文件夹中，文件标题是计划标题，文件后缀是md格式的。
+3.需要根据市名称和该城市的天气情况，生成一份1天的关于该城市的旅游计划（200字以内）,不要返回Unicode编码格式的字符
+4.给该计划起一个标题，该计划文件内容是markdown格式，存在第一步创建的文件夹中，文件标题是计划标题，文件后缀是md格式的。
 
 """
 
 prompt = ChatPromptTemplate.from_messages([
-    SystemMessage(system_prompt),
-        ("human", "{location}"),
+    #SystemMessage(system_prompt),
+    ("system", system_prompt),
+    ("human", "{location}"),
     MessagesPlaceholder(variable_name="agent_scratchpad")
 ])
 
 # 工具集
-tools = [create_folder,exists_folder, generate_file, get_weather]
-
-llm.bind_tools(tools)
+tools = [create_folder, exists_folder, generate_file, get_weather]
 
 # 创建agent
 agent = create_tool_calling_agent(llm, tools, prompt)
 
 agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
 
-# 运行agent
-agent_executor.invoke({"location": "上海市"})
+def invoke_agent(city_name:str):
+    # 运行agent
+    return agent_executor.invoke({"location": city_name})
