@@ -6,8 +6,10 @@ import os
 from langchain.agents import AgentExecutor
 from langchain.agents import create_tool_calling_agent
 from langchain.chat_models import init_chat_model
+from langchain_core.callbacks import StdOutCallbackHandler
 from langchain_core.messages import SystemMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_core.runnables import RunnableConfig
 
 from tools.file_tools import create_folder, generate_file, exists_folder
 from tools.weather_tools import get_weather
